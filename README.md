@@ -19,4 +19,4 @@ Note: The assessment specification does not specify the use of a .jar, but
 Note: Java 8 bulk collections syntax avoided intentionally.
 
 Note: Command-line tested on Git Bash on Windows, as I don't have an Ubuntu
-      distro setup at the moment.      
+      distro set up at the moment.      
