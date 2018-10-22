@@ -3,7 +3,7 @@ package com.chieftainsys.sample;
 import java.time.LocalTime;
 
 /**
- *	One session for a user.  Each user will have 1..n of these. 
+ *	One login session for a user.  Each user will have 1..n of these. 
  */
 public class UserSession {
 	

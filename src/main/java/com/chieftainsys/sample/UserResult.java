@@ -1,5 +1,8 @@
 package com.chieftainsys.sample;
 
+/**
+ *	The output result for one userid 
+ */
 public class UserResult {
 	
 	private String userId;

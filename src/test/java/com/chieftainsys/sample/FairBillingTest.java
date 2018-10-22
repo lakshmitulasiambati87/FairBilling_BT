@@ -25,40 +25,40 @@ public class FairBillingTest {
 
 	@Test
     public void testLoadFile() {	
-		List<String> file = fairBilling.loadFile("test.log");		
+		List<String> file = fairBilling.loadFileToList("test.log");		
         assertFalse( file.isEmpty() );
         assertEquals("Test file loaded correctly", 11, file.size());
     }
 	
 	@Test(expected=FairBillingException.class)
     public void testLoadNoFile() {	
-		fairBilling.loadFile("XXXXX");		
+		fairBilling.loadFileToList("XXXXX");		
     }
 
-	//----------------------------------
+	//---------------------------------------------
 	
 	@Test
     public void testNullOrEmptyLine() {
-		assertFalse(fairBilling.breakUpValidLine(null).isValid());		
-		assertFalse(fairBilling.breakUpValidLine("").isValid());		
+		assertFalse(fairBilling.breakUpLine(null).isValid());		
+		assertFalse(fairBilling.breakUpLine("").isValid());		
     }
 	
 	@Test
     public void testInvalidLine() {
-		assertFalse(fairBilling.breakUpValidLine("xxx").isValid());		
+		assertFalse(fairBilling.breakUpLine("xxx").isValid());		
     }
 	
 	@Test
     public void testInvalidLinePartial() {
-		assertFalse(fairBilling.breakUpValidLine("14:02:03 ALICE99").isValid());		
+		assertFalse(fairBilling.breakUpLine("14:02:03 ALICE99").isValid());		
     }
 	
 	@Test
     public void testValidLine() {
-		assertTrue(fairBilling.breakUpValidLine("14:02:03 ALICE99 Start").isValid());		
+		assertTrue(fairBilling.breakUpLine("14:02:03 ALICE99 Start").isValid());		
     }
 	
-	//-------------------------------------------
+	//---------------------------------------------
 	
 	@Test
 	public void testBreakUpLines() {
@@ -72,7 +72,7 @@ public class FairBillingTest {
 	}
 	
 	
-	//-------------------------------------------
+	//---------------------------------------------
 	
 	@Test
 	public void testProcessLineStartingWithNothing() {
@@ -127,7 +127,7 @@ public class FairBillingTest {
 		assertEquals("UserSession [userId=FRED, startTime=14:03:01, endTime=null]", userList.get(1).toString());
 	}
 
-	//-------------------------------------
+	//---------------------------------------------
 		
 	@Test
 	public void testProcessFileOneEndOneRow() {
@@ -161,7 +161,7 @@ public class FairBillingTest {
 		assertEquals(2, map.get("FRED").size());
 	}
 	
-	//-----------------------------------------------
+	//---------------------------------------------
 	
 	@Test
 	public void testProcessNullFileAsList() {

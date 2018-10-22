@@ -1,5 +1,8 @@
 package com.chieftainsys.sample;
 
+/**
+ *   A line from the input file, broken up into bits by the regex 
+ */
 public class LineInPieces {
 	
 	private boolean valid;

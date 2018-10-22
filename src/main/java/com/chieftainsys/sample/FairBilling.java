@@ -16,14 +16,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
-  *   Main entry point.
+  *   Main class.
   */
 public class FairBilling  {
 	
 	public static final String START_ACTION = "Start";
 	public static final String END_ACTION = "End";
 	
-	protected List<String> loadFile(String fileName) {
+	protected List<String> loadFileToList(String fileName) {
 		
 		List<String> lines = Collections.emptyList(); 
 		try {
@@ -47,8 +47,14 @@ public class FairBilling  {
 		for (String line : lines) {
 			
 			LineInPieces lineInPieces = new LineInPieces();
-			lineInPieces = breakUpValidLine(line);			
-			
+			lineInPieces = breakUpLine(line);			
+
+			// Validate action
+	    	if (!START_ACTION.equals(lineInPieces.getAction()) && !END_ACTION.equals(lineInPieces.getAction())) {
+	    		System.err.println("Invalid action: action not set to either Start or End in line " + line + " - skipped");
+	    		lineInPieces.setValid(false);
+	    	}
+
 			// Ignore invalid lines
 			if (lineInPieces.isValid()) {
 				lineInPiecesList.add(lineInPieces);
@@ -92,22 +98,6 @@ public class FairBilling  {
 				+ line.getMinutes() + ":" 
 				+ line.getSeconds());
 		
-		if (userSessionList.size() == 0) {
-			
-			// Convert lineInPieces as is, into a userSession
-			
-			UserSession userSession = new UserSession(line.getUserid());
-			if (START_ACTION.equals(line.getAction())) {
-				userSession.setStartTime(lineTime);
-			} else {
-				userSession.setEndTime(lineTime);
-			}
-			userSessionList.add(userSession);
-			return userSessionList;
-		}
-		
-		// Otherwise there are existing records
-		
 		// If it is a start, add a row regardless
 		if (START_ACTION.equals(line.getAction()) ) {
 			UserSession userSession = new UserSession(line.getUserid());
@@ -121,7 +111,7 @@ public class FairBilling  {
 		// but with the first unfinished start
 		for (UserSession userSession: userSessionList) {
 			
-			// Matches first Start
+			// Matches first Start - is it unfinished?
 			if (userSession.getEndTime() == null) {
 				userSession.setEndTime(lineTime);
 				return userSessionList;
@@ -138,7 +128,7 @@ public class FairBilling  {
 	/**
 	 * Break up the line.  If it's valid, it will be like "14:02:03 ALICE99 Start"
 	 */
-	protected LineInPieces breakUpValidLine(String line) {
+	protected LineInPieces breakUpLine(String line) {
 		
 		LineInPieces lineInPieces = new LineInPieces();
 		lineInPieces.setValid(false);
@@ -161,11 +151,6 @@ public class FairBilling  {
     	
     	lineInPieces.setValid(matcher.matches());
     	
-    	if (!START_ACTION.equals(lineInPieces.getAction()) && !END_ACTION.equals(lineInPieces.getAction())) {
-    		System.err.println("Invalid action: action not set to either Start or End in line " + line + " - skipped");
-    		lineInPieces.setValid(false);
-    	}
-        
         return lineInPieces;
 	}
 	
@@ -200,7 +185,7 @@ public class FairBilling  {
     	
     	List<UserResult> results = new ArrayList<>();
     	
-    	// Calculate the times
+    	// Calculate how long each session lasted in seconds
     	for (String userid : map.keySet()) {
     		int total = 0;
     		int numberOfSessions = 0;
@@ -234,10 +219,12 @@ public class FairBilling  {
 	    	
 	    	// Load the file into a list
 	    	FairBilling fairBilling = new FairBilling();
-	    	List<String> lines = fairBilling.loadFile(fileName);
+	    	List<String> lines = fairBilling.loadFileToList(fileName);
 
 	    	// Do everything with the list
 	    	List<UserResult> results = fairBilling.processFileAsList(lines);
+	    	
+	    	// Output results
 	    	for (UserResult result : results) {
 	    		System.out.println(result.getUserId() + " " + result.getNumberOfSessions() + " " + result.getBillableTimeInSeconds());
 	    	}
