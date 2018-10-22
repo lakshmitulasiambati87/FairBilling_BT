@@ -15,3 +15,5 @@ Note: The assessment specification does not specify the use of a .jar, but
       this is what I would expect to use in a Java application, unless the
       code was all in a single file (which violates the SOLID principles),
       or the environment classpath was modified to include current directory.
+      
+Note: Java 8 bulk collections syntax avoided intentionally.      
